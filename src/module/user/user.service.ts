@@ -29,8 +29,38 @@ const getUserFromDBById = async (id: String) => {
   return result;
 };
 
+const updateUserInDB = async (payLoad: IUser, id: String) => {
+  const { name, password, age, is_active } = payLoad;
+  const result = await pool.query(
+    `
+    UPDATE users
+    SET 
+    name=COALESCE($1,name),
+    password=COALESCE($2,password),
+    age=COALESCE($3,age),
+    is_active=COALESCE($4,is_active) 
+
+    WHERE id=$5 RETURNING *
+    `,
+    [name, password, age, is_active,id],
+  );
+  return result;
+};
+
+const deleteUserFromDB = async (id: String) => {
+  const result = await pool.query(
+    `
+    DELETE FROM users WHERE id=$1  
+      `,
+    [id],
+  );
+  return result;
+};
+
 export const userService = {
   createUserIntoDB,
   getUserFromDB,
   getUserFromDBById,
+  updateUserInDB,
+  deleteUserFromDB
 };
