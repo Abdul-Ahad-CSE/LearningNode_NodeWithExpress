@@ -3,22 +3,22 @@ import express, {
   type Request,
   type Response,
 } from "express";
-
-const app: Application = express();
-
 import { pool } from "./db";
 import { userRouter } from "./module/user/user.route";
+import { profileRouter } from "./module/profile/profile.route";
 
+const app: Application = express();
 app.use(express.json());
 
-app.use('/api/users',userRouter);
+app.get("/", (req: Request, res: Response) => {
+  //res.send("Hello World!");
+  res.status(200).json({
+    message: "Express Server",
+    author: "Next Level",
+  });
+});
 
-app.get("/api/users", userRouter);
-
-app.get("/api/users", userRouter);
-
-app.put("/api/users",  userRouter);
-
-app.delete("/api/users",  userRouter); 
+app.use("/api/users", userRouter);
+app.use("/api/profile", profileRouter);
 
 export default app;
